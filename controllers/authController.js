@@ -1,4 +1,4 @@
-const { createUser, getUserByUsername, checkPassword } = require("../services/userService");
+const { createUser, getUserByEmail, checkPassword, index } = require("../services/userService");
 
 // Afficher le formulaire register
 function showRegister(req, res) {
@@ -19,8 +19,8 @@ function showLogin(req, res) {
 
 // Traiter la connexion
 async function login(req, res) {
-  const { name, password } = req.body;
-  const user = await getUserByUsername(name);
+  const { email, password } = req.body;
+  const user = await getUserByEmail(email);
 
   if (!user) {
     return res.send("❌ Utilisateur non trouvé");
@@ -33,7 +33,10 @@ async function login(req, res) {
 
   // sauvegarder en session
   req.session.user = { id: user.id, username: user.name, role: user.role };
-  res.send(`✅ Bienvenue ${user.username}`);
+  // res.send(`✅ Bienvenue ${user.username}`);
+      res.redirect("/home");
+
+
 }
 
 // Déconnexion

@@ -2,7 +2,16 @@ const QuizService = require("../services/service");
 
 // Display home page
 exports.index = (req, res) => {
-  res.render("index");
+  const user = req.session.user;
+
+  console.log("username: " + user);
+  
+
+  if (user.role === "admin") {
+    res.render("admin", { user });
+  } else {
+    res.render("index", { user });  
+  }
 };
 
 // Display quiz page

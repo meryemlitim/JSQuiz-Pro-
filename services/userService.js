@@ -11,14 +11,15 @@ async function createUser(name, password, email) {
 }
 
 // Chercher par username
-async function getUserByUsername(name) {
-  const [rows] = await db.query("SELECT * FROM user WHERE name = ?", [name]);
+async function getUserByEmail(email) {
+  const [rows] = await db.query("SELECT * FROM user WHERE email = ?", [email]);
   return rows[0];
 }
+
 
 // Vérifier mot de passe
 async function checkPassword(password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 }
 
-module.exports = { createUser, getUserByUsername, checkPassword };
+module.exports = { createUser, getUserByEmail, checkPassword };

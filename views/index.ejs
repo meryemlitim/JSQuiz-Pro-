@@ -19,7 +19,7 @@
     <form class="form" id="player-form" action="/quiz" method="GET">
       <div class="form-field">
         <label for="player-name" class="form-label">Name or alias</label>
-        <input type="text" name="username" id="player-name" class="form-input" placeholder="e.g. Sam or TheWizard" required>
+        <input type="text" name="username" id="player-name" class="form-input" placeholder="e.g. Sam or TheWizard" disabled value="<%= user.username %>">
       </div>
 
       <div class="form-field">
