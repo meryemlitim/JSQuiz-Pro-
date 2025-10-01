@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Results</title>
+  <link rel="stylesheet" href="/css/results.css">
+</head>
+<body>
+  <div class="results-container" style="min-width: 900px;">
+    <div style="display: flex; justify-content: space-between;">
+      <h1 style="text-align: center;">Quiz Results</h1>
+      <a style="float: right;" href="/" class="home-link">Home</a>
+    </div>
+
+    <p><strong>Name:</strong> <%= report.name %></p>
+    <p><strong>Category:</strong> <%= report.category %></p>
+    <p><strong>Score:</strong> <%= report.score %></p>
+    <p><strong>Date:</strong> <%= report.dateTime %></p>
+
+    <h2>Detailed Report</h2>
+
+    <% report.responses.forEach(function(r, i) { 
+        const correctAnswers = r.correct || [];
+        const chosenAnswers = r.chosen || [];
+        const isCorrect = JSON.stringify(chosenAnswers.sort()) === JSON.stringify(correctAnswers.sort());
+        const isUnanswered = chosenAnswers.length === 1 && chosenAnswers[0] === "none";
+    %>
+      <div class="question-report 
+                  <%= isUnanswered ? 'wrong' : (isCorrect ? 'correct' : 'wrong') %>">
+        <h3>Q<%= i + 1 %>: <%= r.question %></h3>
+        <p><strong>Your answer:</strong> <%= isUnanswered ? "No answer" : chosenAnswers.join(", ") %></p>
+        <p><strong>Correct answer:</strong> <%= correctAnswers.length ? correctAnswers.join(", ") : "N/A" %></p>
+      </div>
+    <% }) %>
+
+    <button id="print-report-btn">Print / Save as PDF</button>
+  </div>
+
+  <script>
+    document.getElementById('print-report-btn').addEventListener('click', () => {
+      window.print();
+    });
+  </script>
+</body>
+</html>
