@@ -1,0 +1,46 @@
+const { createUser, getUserByUsername, checkPassword } = require("../services/userService");
+
+// Afficher le formulaire register
+function showRegister(req, res) {
+  res.render("register");
+}
+
+// Traiter l'inscription
+async function register(req, res) {
+  const { name, password, email } = req.body;
+  await createUser(name, password, email);
+  res.redirect("/login");
+}
+
+// Afficher le formulaire login
+function showLogin(req, res) {
+  res.render("login");
+}
+
+// Traiter la connexion
+async function login(req, res) {
+  const { name, password } = req.body;
+  const user = await getUserByUsername(name);
+
+  if (!user) {
+    return res.send("❌ Utilisateur non trouvé");
+  }
+
+  const isValid = await checkPassword(password, user.password);
+  if (!isValid) {
+    return res.send("❌ Mot de passe incorrect");
+  }
+
+  // sauvegarder en session
+  req.session.user = { id: user.id, username: user.name, role: user.role };
+  res.send(`✅ Bienvenue ${user.username}`);
+}
+
+// Déconnexion
+function logout(req, res) {
+  req.session.destroy(() => {
+    res.redirect("/login");
+  });
+}
+
+module.exports = { showRegister, register, showLogin, login, logout };
