@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
+  <link rel="stylesheet" href="/css/quiz.css">
+</head>
+<body style="margin-top: 100px;">
+<div class="quiz-container">
+
+  <!-- Header -->
+  <div class="quiz-header">
+    <h1 class="quiz-title">Quiz System :</h1>
+    <div class="quiz-info">
+      <span class="quiz-global-timer">Total: 00:00</span>
+      <span class="quiz-timer">Time: 00:00</span>
+      <span class="quiz-score">Score: 0</span>
+    </div>
+  </div>
+
+  <h3><span class="quiz-category"><%= category %></span></h3>
+
+  <div class="quiz-body">
+    <div class="quiz-progress"></div>
+    <div class="quiz-question">
+      <h2 class="question-text"></h2>
+    </div>
+
+    <div class="answers-container"></div>
+
+    <div class="quiz-actions">
+      <button class="next-btn">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const quizSession = {
+  username: "<%= username %>",
+  category: "<%= category %>"
+};
+const questions = <%- questions %>;
+console.log(questions);
+
+
+const progressContainer = document.querySelector(".quiz-progress");
+
+questions.forEach(() => {
+  const seg = document.createElement("div");
+  seg.className = "segment";
+  progressContainer.appendChild(seg);
+});
+
+
+let index = 0;
+let score = 0;
+const chosenResponses = [];
+
+const questionText = document.querySelector(".question-text");
+const answersContainer = document.querySelector(".answers-container");
+const nextBtn = document.querySelector(".next-btn");
+const quizTimer = document.querySelector(".quiz-timer");
+
+const QUESTION_TIME = 30; // seconds
+let remainingSeconds = QUESTION_TIME;
+let questionInterval;
+
+function calculatePoints(remainingSeconds) {
+  if (remainingSeconds <= 0) return 0;
+  const elapsed = QUESTION_TIME - remainingSeconds;
+  if (elapsed <= 10) return 100;
+  if (elapsed <= 20) return 75;
+  if (elapsed <= 25) return 50;
+  return 25;
+}
+
+function startTimer() {
+  remainingSeconds = QUESTION_TIME;
+  quizTimer.textContent = `Time: ${remainingSeconds}s`;
+
+  questionInterval = setInterval(() => {
+    remainingSeconds--;
+    quizTimer.textContent = `Time: ${remainingSeconds}s`;
+
+    if (remainingSeconds <= 0) {
+      clearInterval(questionInterval);
+
+      const currentSegment = progressContainer.children[index];
+      currentSegment.classList.add("wrong");
+
+      handleNext(["none"]); // time ran out
+    }
+  }, 1000);
+}
+
+function showQuestion(i) {
+  clearInterval(questionInterval);
+  startTimer();
+
+  const q = questions[i];
+  questionText.textContent = `Question ${i + 1}: ${q.text}`;
+  answersContainer.innerHTML = "";
+
+  q.answers.forEach(a => {
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.type = q.correct.length > 1 ? "checkbox" : "radio";
+    input.name = "answer";
+    input.value = a.text;
+    label.appendChild(input);
+    label.append(" " + a.text);
+    answersContainer.appendChild(label);
+  });
+
+  if (q.correct.length > 1) {
+    const p = document.createElement("p");
+    p.className = "multi-hint";
+    p.textContent = "Multiple answers";
+    answersContainer.appendChild(p);
+  }
+}
+
+function handleNext(selected) {
+  const currentQ = questions[index];
+
+chosenResponses.push({ 
+  questionId: questions[index].id,
+  question: questions[index].text,
+  chosen: selected.length ? selected : ["none"],
+  correct: questions[index].correct
+});
+
+
+  // calculate score based on remaining time
+  if (JSON.stringify(selected.sort()) === JSON.stringify(currentQ.correct.sort())) {
+    score += calculatePoints(remainingSeconds);
+  }
+
+  index++;
+  if (index < questions.length) {
+    showQuestion(index);
+  } else {
+    // submit results to backend
+    fetch("/quiz", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: "<%= username %>",
+        category: "<%= category %>",
+        score,
+        totalTime: QUESTION_TIME * questions.length - remainingSeconds, // optional total time
+        responses: chosenResponses
+      })
+    })
+    .then(res => res.text())
+    .then(html => document.body.innerHTML = html);
+  }
+}
+
+nextBtn.addEventListener("click", () => {
+  const selected = Array.from(document.querySelectorAll("input[name='answer']:checked"))
+                       .map(el => el.value);
+
+  const currentSegment = progressContainer.children[index];
+  const correctAnswers = questions[index].correct;
+
+  const isCorrect = JSON.stringify(selected.sort()) === JSON.stringify(correctAnswers.sort());
+  currentSegment.classList.add(isCorrect ? "correct" : "wrong");
+
+  if (selected.length === 0) return; // must choose something
+  clearInterval(questionInterval);
+  handleNext(selected);
+});
+
+// init
+showQuestion(index);
+</script>
+
+
+
+</body>
+</html>
