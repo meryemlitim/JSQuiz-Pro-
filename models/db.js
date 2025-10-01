@@ -5,7 +5,7 @@ const pool = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "express_ejs_demo"
+  database: "jsQuizPro"
 });
 
 // export the connection as a promise

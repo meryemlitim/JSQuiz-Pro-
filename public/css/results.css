@@ -1,0 +1,98 @@
+/* Results container */
+.results-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #333;
+}
+
+/* Headings */
+.results-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #0984e3;
+  text-align: center;
+}
+
+.results-container h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #2d3436;
+}
+
+/* Individual question report */
+.question-report {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 6px solid #dfe6e9;
+  background: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.question-report.correct {
+  border-left-color: #00b894;
+}
+
+.question-report.wrong {
+  border-left-color: #d63031;
+}
+
+/* Question title */
+.question-report h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Answer paragraphs */
+.question-report p {
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+}
+
+/* Print / PDF button */
+#print-report-btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: #0984e3;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1.5rem;
+}
+
+#print-report-btn:hover {
+  background: #0771c7;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .results-container {
+    padding: 1rem;
+  }
+  
+  .results-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .results-container h2 {
+    font-size: 1.2rem;
+  }
+  
+  .question-report h3 {
+    font-size: 1rem;
+  }
+}
+
+.home-link {
+  color: #0984e3;
+  text-decoration: none;
+}
