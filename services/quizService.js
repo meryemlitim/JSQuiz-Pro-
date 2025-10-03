@@ -13,9 +13,9 @@ async function startQuiz(name, email, category) {
 async function submitQuiz(userId, quizId, score, responses) {
   const rapportId = await Rapport.create(userId, quizId, score);
 
-  // responses should include questionId and chosenIds (array of answer IDs)
-  await Rapport.addHistory(rapportId, responses);
-
+    // responses should include question id and chosen ids (array of answer IDs)
+    await Rapport.addHistory(rapportId, responses);
+    
   return rapportId;
 }
 

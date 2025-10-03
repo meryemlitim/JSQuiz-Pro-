@@ -34,7 +34,12 @@ async function login(req, res) {
   // sauvegarder en session
   req.session.user = { id: user.id, username: user.name, role: user.role };
   // res.send(`✅ Bienvenue ${user.username}`);
-      res.redirect("/admin-dashboard");
+
+  if (user.role === "admin") {
+    res.redirect("/admin-dashboard");
+  } else {
+    res.redirect("/home");
+  }
 
 
 }
