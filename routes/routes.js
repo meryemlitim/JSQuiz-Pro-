@@ -27,6 +27,10 @@ router.post("/quiz", userController.submitQuiz);
 // admin routes
 router.get("/admin-dashboard",adminController.index);
 router.post("/addQuiz", adminController.AddQuiz);
+// delete question :
+router.get("/admin-dashboard/delete/:id", adminController.deleteQuestion);
+// add quiz category:
+router.post("/addCategory", adminController.addCategory);   
 
 //export routes
 module.exports = router;

@@ -61,9 +61,49 @@ async function getCategory() {
     throw err;
   }
 }
+// get questions :
+async function getQuestions(){
+try{
+const [result] = await db.query("SELECT question.id, quiz_id, text,category,user_id  FROM question JOIN quiz on question.quiz_id = quiz.id ");
+return result;
+}catch(err){
+  console.error("Failed to load questions");
+}
+}
+// delete question :
+ async function deleteQues(id){
+ try {
+    const [result] = await db.query("DELETE FROM question WHERE id = ?", [id]);
+    return result;
+  } catch (err) {
+    console.error("Database error:", err);
+    throw err;
+  }
+ }
+
+//  creat category :
+async function createCategory(category, userId) {
+    try {
+    const [result] = await db.query(
+      "INSERT INTO quiz (category, user_id) VALUES (?, ?)",
+      [category, userId]
+    );
+
+  
+
+    return result.insertId; 
+  } catch (err) {
+    console.error("Error inserting quiz category:", err);
+    throw err;
+  }
+}
+// delete question 
 module.exports = {
   startQuiz,
   submitQuiz,
   createQuiz,
   getCategory,
+  getQuestions,
+  deleteQues,
+  createCategory,
 };
