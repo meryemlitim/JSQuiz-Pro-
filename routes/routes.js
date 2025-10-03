@@ -5,6 +5,7 @@ const router = express.Router();
 
 const authController = require("../controllers/authController");
 const userController = require("../controllers/userController");
+const adminController = require("../controllers/adminController");
 
 
 // Auth
@@ -23,7 +24,9 @@ router.get("/home", userController.index);
 router.get("/quiz", userController.quiz);
 router.post("/quiz", userController.submitQuiz);
 
-
+// admin routes
+router.get("/admin-dashboard",adminController.index);
+router.post("/addQuiz", adminController.AddQuiz);
 
 //export routes
 module.exports = router;

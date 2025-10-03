@@ -17,7 +17,7 @@ function showLogin(req, res) {
   res.render("login");
 }
 
-// Traiter la connexion
+// Traiter la connexion.
 async function login(req, res) {
   const { email, password } = req.body;
   const user = await getUserByEmail(email);
@@ -34,7 +34,12 @@ async function login(req, res) {
   // sauvegarder en session
   req.session.user = { id: user.id, username: user.name, role: user.role };
   // res.send(`✅ Bienvenue ${user.username}`);
-      res.redirect("/home");
+
+  if (user.role === "admin") {
+    res.redirect("/admin-dashboard");
+  } else {
+    res.redirect("/home");
+  }
 
 
 }
