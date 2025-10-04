@@ -20,7 +20,7 @@ exports.AddQuiz = async (req, res) => {
     await createQuiz(quizId, questionText,answerText, status);
     res.redirect("admin-Dashboard");
 
-    res.json({ message: "Quiz created successfully" });
+    // res.json({ message: "Quiz created successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error creating quiz");

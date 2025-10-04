@@ -23,9 +23,10 @@ router.get("/logout", authController.logout);
 router.get("/home", userController.index);
 router.get("/quiz", userController.quiz);
 router.post("/quiz", userController.submitQuiz);
+router.get("/history", userController.history);
 
 // admin routes
-router.get("/admin-dashboard",adminController.index);
+router.get("/admin-Dashboard",adminController.index);
 router.post("/addQuiz", adminController.AddQuiz);
 
 //export routes

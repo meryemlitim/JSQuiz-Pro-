@@ -1,47 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Home</title>
-  <link rel="stylesheet" href="/css/index.css">
-</head>
-<body>
-  <div class="quiz-container" style="margin-top: 100px;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home - Quiz Platform</title>
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/admin_dashboard.css" />
+  </head>
+  <body>
+    <div class="quiz-container" style="margin-top: 100px;">
+        <!-- Header -->
+        <div class="quiz-header">
+          <h1 class="quiz-title">Welcome to the Quiz System</h1>
+          <a href="/history" id="history-link">History</a>
 
-    <!-- Header -->
-    <div class="quiz-header">
-      <h1 class="quiz-title">Welcome to the Quiz System</h1>
+        </div>
+
+        <!-- Quiz Start Form -->
+        <div class="quiz-body">
+        <form class="form" id="player-form" action="/quiz" method="GET">
+          <div class="form-field">
+            <label for="player-name" class="form-label">Name</label>
+            <input type="text" name="username" id="player-name" class="form-input" placeholder="e.g. Sam or TheWizard" disabled value="<%= user.username %>">
+          </div>
+          <div class="form-field">
+            <label for="category" class="form-label">Select category</label>
+            <select name="category" id="category" class="form-input" required>
+              <option value="" selected disabled>-- Choose a category --</option>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat.category %>"><%= cat.category %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="quiz-actions">
+            <button type="submit" class="next-btn">Start Quiz</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Leaderboard Section -->
+      <div class="leaderboard-container">
+        <div class="leaderboard-title">🏆 Top 5 Players</div>
+        <ul class="leaderboard-list">
+          <% topUsers.forEach((player, index) => { %>
+            <li>
+              <span><%= index + 1 %>. <%= player.name %></span>
+              <span><%= player.totalScore %></span>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+      
+      <div class="home-stats">
+        <h2>Your Statistics</h2>
+        
+        <div class="stat-card">
+          <span class="stat-label">Quizzes Taken</span>
+          <span class="stat-value"><%= userStats.quizzesTaken %></span>
+        </div>
+        
+        <div class="stat-card">
+          <span class="stat-label">Average Score</span>
+          <span class="stat-value"><%= Number(userStats.avgScore).toFixed(2) %></span>
+        </div>
+        
+        <div class="stat-card">
+          <span class="stat-label">Total Score</span>
+          <span class="stat-value"><%= userStats.totalScore %></span>
+        </div>
+      </div>
+
     </div>
-
-    <!-- Quiz Start Form -->
-    <div class="quiz-body">
-    <form class="form" id="player-form" action="/quiz" method="GET">
-      <div class="form-field">
-        <label for="player-name" class="form-label">Name or alias</label>
-        <input type="text" name="username" id="player-name" class="form-input" placeholder="e.g. Sam or TheWizard" disabled value="<%= user.username %>">
-      </div>
-
-      <div class="form-field">
-        <label for="category" class="form-label">Select category</label>
-        <select name="category" id="category" class="form-input" required>
-          <option value="" selected disabled>-- Choose a category --</option>
-          <option value="general">General Knowledge</option>
-          <option value="science">Science</option>
-          <option value="history">History</option>
-          <option value="technology">Technology</option>
-          <option value="sports">Sports</option>
-        </select>
-      </div>
-
-      <div class="quiz-actions">
-        <button type="submit" class="next-btn">Start Quiz</button>
-      </div>
-    </form>
-
-    </div>
-  </div>
-
-  <!-- <script src="/js/index.js"></script> -->
-</body>
+  </body>
 </html>

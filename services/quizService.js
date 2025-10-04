@@ -3,6 +3,7 @@ const Quiz = require("../models/Quiz");
 const Rapport = require("../models/Rapport");
 const { quiz } = require("../controllers/userController");
 const db = require("../models/db");
+
 async function startQuiz(name, email, category) {
   const user = await User.findOrCreate(name, email);
   const quiz = await Quiz.create(category, user.id);
@@ -54,7 +55,6 @@ for (let i = 0; i < answerText.length; i++) {
 async function getCategory() {
   try {
     const [result] = await db.query("SELECT * FROM quiz");
-    console.log(result);
     return result;
   } catch (err) {
     console.error("Error inserting quiz:", err);
