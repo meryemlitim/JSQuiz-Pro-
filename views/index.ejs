@@ -6,6 +6,7 @@
     <title>Home - Quiz Platform</title>
     <link rel="stylesheet" href="/css/index.css" />
     <link rel="stylesheet" href="/css/admin_dashboard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   </head>
   <body>
     <div class="quiz-container" style="margin-top: 100px;">
@@ -16,12 +17,38 @@
 
         </div>
 
+              <div class="user-badge">
+        <% 
+          let badge = "";
+          let badgeIcon = "";
+          if (user.totalScore <= 10000) {
+            badge = "Beginner";
+            badgeIcon = "fa-star-half-stroke"; 
+          } else if (user.totalScore <= 30000) {
+            badge = "Intermediate";
+            badgeIcon = "fa-star"; 
+          } else {
+            badge = "Expert";
+            badgeIcon = "fa-trophy"; 
+          }
+        %>
+        <p>Hello <%= user.username %>! Your Badge:</p>
+        <div class="badge-container">
+          <i class="fa <%= badgeIcon %> badge-icon"></i>
+          <span class="badge-text"><%= badge %></span>
+        </div>
+      </div>
+
         <!-- Quiz Start Form -->
         <div class="quiz-body">
         <form class="form" id="player-form" action="/quiz" method="GET">
           <div class="form-field">
             <label for="player-name" class="form-label">Name</label>
-            <input type="text" name="username" id="player-name" class="form-input" placeholder="e.g. Sam or TheWizard" disabled value="<%= user.username %>">
+            <input type="text" name="username" id="player-name" class="form-input" placeholder="username" disabled value="<%= user.username %>">
+          </div>
+          <div class="form-field">
+            <label for="player-name" class="form-label">Email</label>
+            <input type="text" name="email" id="player-name" class="form-input" placeholder="@gmail.com" disabled value="<%= user.email %>">
           </div>
           <div class="form-field">
             <label for="category" class="form-label">Select category</label>

@@ -32,7 +32,7 @@ async function login(req, res) {
   }
 
   // sauvegarder en session
-  req.session.user = { id: user.id, username: user.name, role: user.role };
+  req.session.user = { id: user.id, username: user.name, role: user.role , email: user.email , totalScore: user.totalScore};
   // res.send(`✅ Bienvenue ${user.username}`);
 
   if (user.role === "admin") {
