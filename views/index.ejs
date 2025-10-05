@@ -14,8 +14,13 @@
         <div class="quiz-header">
           <h1 class="quiz-title">Welcome to the Quiz System</h1>
           <a href="/history" id="history-link">History</a>
-
         </div>
+        <div class="logout-container">
+          <form action="/logout" method="GET">
+            <button type="submit" class="logout-btn">Logout</button>
+          </form>
+        </div>
+
 
               <div class="user-badge">
         <% 
@@ -26,7 +31,7 @@
             badgeIcon = "fa-star-half-stroke"; 
           } else if (user.totalScore <= 30000) {
             badge = "Intermediate";
-            badgeIcon = "fa-star"; 
+            badgeIcon = "fa-st"; 
           } else {
             badge = "Expert";
             badgeIcon = "fa-trophy"; 
@@ -44,11 +49,11 @@
         <form class="form" id="player-form" action="/quiz" method="GET">
           <div class="form-field">
             <label for="player-name" class="form-label">Name</label>
-            <input type="text" name="username" id="player-name" class="form-input" placeholder="username" disabled value="<%= user.username %>">
+            <input type="text" name="username" id="player-name" class="form-input" placeholder="username" readonly value="<%= user.username %>">
           </div>
           <div class="form-field">
             <label for="player-name" class="form-label">Email</label>
-            <input type="text" name="email" id="player-name" class="form-input" placeholder="@gmail.com" disabled value="<%= user.email %>">
+            <input type="text" name="email" id="player-name" class="form-input" placeholder="@gmail.com" readonly value="<%= user.email %>">
           </div>
           <div class="form-field">
             <label for="category" class="form-label">Select category</label>
@@ -80,6 +85,11 @@
       
       <div class="home-stats">
         <h2>Your Statistics</h2>
+
+        <div class="stat-card">
+          <span class="stat-label">Total Score</span>
+          <span class="stat-value"><%= userStats.totalScore || 0 %></span>
+        </div>
         
         <div class="stat-card">
           <span class="stat-label">Quizzes Taken</span>
@@ -90,13 +100,7 @@
           <span class="stat-label">Average Score</span>
           <span class="stat-value"><%= Number(userStats.avgScore).toFixed(2) %></span>
         </div>
-        
-        <div class="stat-card">
-          <span class="stat-label">Total Score</span>
-          <span class="stat-value"><%= userStats.totalScore %></span>
-        </div>
       </div>
-
     </div>
   </body>
 </html>

@@ -38,7 +38,7 @@ class QuizService {
   }
 
   // Save quiz attempt
-  static async saveRapport(user, category, score, totalTime, responses) {
+  static async saveRapport(user, category, score, totalTime, responses, session) {
     // find quiz id
     const [quizRows] = await db.query(`SELECT id FROM Quiz WHERE category = ? LIMIT 1`, [category]);
     if (!quizRows.length) throw new Error("Quiz not found");
@@ -51,7 +51,7 @@ class QuizService {
       [user.id, quizId, score]
     );
 
-    addQuizScore(user.id, score);
+    this.addQuizScore(user.id, score, session);
 
     console.log(user.id, score);
     
@@ -78,17 +78,24 @@ class QuizService {
     return rapportId;
   }
   
-  static async addQuizScore(userId, newScore) {
+  static async addQuizScore(userId, newScore, session) {
     // Get current total score
     const [rows] = await db.query(
       `SELECT totalScore FROM user WHERE id = ?`,
       [userId]
     );
   
-    const currentScore = rows[0]?.total_score || 0; 
-  
+    console.log(rows[0]?.totalScore);
+    console.log(rows[0]);
+    
+    
+    const currentScore = rows[0]?.totalScore || 0; 
+    
     const updatedScore = currentScore + newScore;
-  
+
+    // Update session
+    session.user.totalScore = updatedScore;
+    
     // Update user table
     await db.query(
       `UPDATE user SET totalScore = ? WHERE id = ?`,
