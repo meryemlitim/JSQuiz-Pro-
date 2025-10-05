@@ -333,6 +333,19 @@
       .option-item input[type="checkbox"] {
         width: auto;
       }
+      .edit-option-item {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .edit-option-item input[type="text"] {
+        flex: 1;
+      }
+
+      .edit-option-item input[type="checkbox"] {
+        width: auto;
+      }
 
       @media (max-width: 768px) {
         .sidebar {

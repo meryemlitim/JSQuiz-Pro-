@@ -54,7 +54,7 @@ for (let i = 0; i < answerText.length; i++) {
 async function getCategory() {
   try {
     const [result] = await db.query("SELECT * FROM quiz");
-    console.log(result);
+    // console.log(result);
     return result;
   } catch (err) {
     console.error("Error inserting quiz:", err);
@@ -63,8 +63,27 @@ async function getCategory() {
 }
 // get questions :
 async function getQuestions(){
+ 
 try{
-const [result] = await db.query("SELECT question.id, quiz_id, text,category,user_id  FROM question JOIN quiz on question.quiz_id = quiz.id ");
+// const [result] = await db.query("SELECT question.id, quiz_id, text,category,user_id  FROM question JOIN quiz on question.quiz_id = quiz.id ");
+const [result] = await db.query(`
+  SELECT 
+    qs.id AS question_id,
+    qs.text AS text,
+    qz.id AS quiz_id,
+    qz.category,
+    GROUP_CONCAT(
+        CONCAT(a.id, ':', a.text, ':', a.status)
+        SEPARATOR '|'
+    ) AS answers
+FROM Question qs
+JOIN Quiz qz ON qs.quiz_id = qz.id
+LEFT JOIN Answer a ON qs.id = a.question_id
+GROUP BY qs.id
+ORDER BY qs.id;
+
+`);
+// console.log("Questions:", result);
 return result;
 }catch(err){
   console.error("Failed to load questions");
@@ -81,7 +100,7 @@ return result;
   }
  }
 
-//  creat category :
+//  create category :
 async function createCategory(category, userId) {
     try {
     const [result] = await db.query(
@@ -97,6 +116,33 @@ async function createCategory(category, userId) {
     throw err;
   }
 }
+
+
+// edit  question
+
+async function EditQues(questionId, quizId, questionText, answerId, answerText, status) {
+   try {
+    const [result] = await db.query(
+      "UPDATE question SET quiz_id = ?, text = ? WHERE id = ?",
+      [quizId, questionText, questionId]
+    );
+
+    for (let i = 0; i < answerText.length; i++) {
+  const text = answerText[i];
+  const isCorrect = status && status.includes(String(i)) ? 1 : 0;
+  const id = answerId[i]
+  await db.query(
+    "UPDATE answer SET text = ?, status = ? where id= ?",
+    [text, isCorrect, id]
+  );
+}
+     return result;
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error");
+  }
+}
+
 // delete question 
 module.exports = {
   startQuiz,
@@ -106,4 +152,5 @@ module.exports = {
   getQuestions,
   deleteQues,
   createCategory,
+  EditQues,
 };

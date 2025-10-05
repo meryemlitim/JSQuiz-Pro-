@@ -1,4 +1,4 @@
-const { createQuiz, getCategory, getQuestions,deleteQues, createCategory } = require("../services/quizService");
+const { createQuiz, getCategory, getQuestions,deleteQues, createCategory, EditQues } = require("../services/quizService");
 
 exports.index = async (req, res) => {
    try {
@@ -56,5 +56,20 @@ exports.addCategory = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Error creating quiz category");
+  }
+}
+
+// edit question:
+
+exports.EditQuestion = async (req, res) => {
+ try {
+    const { id, quizId, questionText,answerId, answerText,status} = req.body;
+     console.log("Edit request body:", req.body); 
+    await EditQues(id, quizId, questionText,answerId, answerText, status);
+    res.redirect("admin-Dashboard");
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error editing question");
   }
 }
