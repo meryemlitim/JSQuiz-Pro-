@@ -3,6 +3,8 @@ const Quiz = require("../models/Quiz");
 const Rapport = require("../models/Rapport");
 const { quiz } = require("../controllers/userController");
 const db = require("../models/db");
+
+
 async function startQuiz(name, email, category) {
   const user = await User.findOrCreate(name, email);
   const quiz = await Quiz.create(category, user.id);
@@ -19,8 +21,7 @@ async function submitQuiz(userId, quizId, score, responses) {
   return rapportId;
 }
 
-// admin add quiz
-
+// Admin add quiz :
 async function createQuiz(quizId, questionText, answerText, status) {
   try {
     const [result] = await db.query(
@@ -50,7 +51,7 @@ for (let i = 0; i < answerText.length; i++) {
   }
 }
 
-// get category :
+// // Fetch categories data to display on the admin dashboard :
 async function getCategory() {
   try {
     const [result] = await db.query("SELECT * FROM quiz");
@@ -61,7 +62,8 @@ async function getCategory() {
     throw err;
   }
 }
-// get questions :
+
+// Fetch questions data to display on the admin dashboard :
 async function getQuestions(){
  
 try{
@@ -118,8 +120,7 @@ async function createCategory(category, userId) {
 }
 
 
-// edit  question
-
+// edit  question :
 async function EditQues(questionId, quizId, questionText, answerId, answerText, status) {
    try {
     const [result] = await db.query(
@@ -143,7 +144,30 @@ async function EditQues(questionId, quizId, questionText, answerId, answerText, 
   }
 }
 
-// delete question 
+// general statistic :
+async function statistics() {
+  try {
+    // Total questions :
+    const [questionsResult] = await db.query("SELECT COUNT(*) AS total FROM question");
+    // Total users :
+    const [usersResult] = await db.query("SELECT COUNT(*) AS total FROM user");
+    // Total quizs :  
+    const [quizResult] = await db.query("SELECT COUNT(*) AS total FROM Rapport");
+    // average score :
+    const [AverageResult] = await db.query("SELECT ROUND(AVG(score), 2) AS average_score FROM Rapport;");
+    
+    return {
+      totalQuestions: questionsResult[0].total,
+      totalUsers: usersResult[0].total,
+      totalQuiz: quizResult[0].total,
+      averageScore: AverageResult[0].average_score,
+    };
+  } catch (err) {
+    console.error("❌ Error fetching statistics:", err);
+    throw err; 
+  }
+}
+
 module.exports = {
   startQuiz,
   submitQuiz,
@@ -153,4 +177,7 @@ module.exports = {
   deleteQues,
   createCategory,
   EditQues,
+  statistics,
 };
+
+

@@ -1,3 +1,4 @@
+// show sections in the admin dashboard  :
 function showSection(sectionId) {
   // Hide all sections
   const sections = document.querySelectorAll(".content-section");
@@ -20,7 +21,7 @@ function showSection(sectionId) {
   };
   document.getElementById("page-title").textContent = titles[sectionId];
 }
-
+// show add question & add category & edit question modals :
 function openModal(button, mode) {
   if (mode === "add") {
     console.log("💀💀💀💀");
@@ -90,10 +91,12 @@ container.innerHTML = answers
   }
 }
 
+// close modal
 function closeModal(modalId) {
   document.getElementById(modalId).classList.remove("active");
 }
 
+// Delete a question by ID after user confirmation, then reload the page to reflect changes :
 async function deleteQuestion(id) {
   console.log(id);
   if (confirm("Are you sure you want to delete this question?")) {
@@ -115,17 +118,18 @@ async function deleteQuestion(id) {
   }
 }
 
-function logout() {
-  if (confirm("Are you sure you want to logout?")) {
-    alert("Logging out...");
-    // In production: clear session and redirect to login
-    window.location.href = "/login";
-  }
-}
-
+// Confirm deletion and redirect to delete URL if confirmed :
 function confirmDelete(id) {
   if (confirm("Are you sure you want to delete this question?")) {
     window.location.href = `/admin-dashboard/delete/${id}`;
   }
 }
+// Confirm logout and redirect to login page if confirmed :
+function logout() {
+  if (confirm("Are you sure you want to logout?")) {
+    alert("Logging out...");
+    window.location.href = "/login";
+  }
+}
+
 
