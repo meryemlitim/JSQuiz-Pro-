@@ -24,6 +24,7 @@ router.get("/logout",isAuthenticated, authController.logout);
 router.get("/home", userController.index);
 router.get("/quiz", userController.quiz);
 router.post("/quiz", userController.submitQuiz);
+router.get("/history", userController.history);
 
 // admin routes
 router.get("/admin-dashboard",isAdmin, adminController.index);
@@ -35,5 +36,9 @@ router.post("/addCategory",isAdmin, adminController.addCategory);
 // edit quetion :
 router.post("/editQuestion",isAdmin, adminController.EditQuestion);  
 //export routes:
+router.get("/admin-Dashboard",adminController.index);
+router.post("/addQuiz", adminController.AddQuiz);
+
+//export routes
 module.exports = router;
 

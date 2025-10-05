@@ -31,17 +31,15 @@ async function login(req, res) {
     return res.send("❌ Mot de passe incorrect");
   }
 
-// Save to session :
-  req.session.user = { id: user.id, username: user.name, role: user.role };
- 
-// check the user's role :
+  // Save to session :
+  req.session.user = { id: user.id, username: user.name, role: user.role , email: user.email , totalScore: user.totalScore};
+  
+  // check the user's role :
   if (user.role === "admin") {
     res.redirect("/admin-dashboard");
   } else {
     res.redirect("/home");
   }
-
-
 }
 
 // logout :

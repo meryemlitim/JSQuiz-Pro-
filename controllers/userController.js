@@ -1,16 +1,24 @@
 const QuizService = require("../services/service");
+const { getCategory } = require("../services/quizService");
 
 // Display home page
-exports.index = (req, res) => {
+exports.index = async (req, res) => {
   const user = req.session.user;
 
-  console.log("username: " + user);
-  
+  try {
+    const categories = await getCategory(); 
+    const topUsers = await QuizService.getLeaderboard(); 
+    const userStats = await QuizService.getUserStats(user.id);
 
-  if (user.role === "admin") {
-    res.render("admin", { user });
-  } else {
-    res.render("index", { user });  
+
+    if (user.role === "admin") {
+      res.render("admin", { user });
+    } else {
+      res.render("index", { user, categories , topUsers , userStats});  
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading home page");
   }
 };
 
@@ -38,7 +46,13 @@ exports.submitQuiz = async (req, res) => {
 
     const finalScore = Number(score) || 0; // make sure it's not null
 
-    const user = { id: 1, name: username }; // dummy user
+    // const user = { id: 1, name: username };
+
+    const user = req.session.user;
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
 
     const rapportId = await QuizService.saveRapport(
       user,
@@ -63,3 +77,15 @@ exports.submitQuiz = async (req, res) => {
   }
 };
 
+exports.history = async (req, res) => {
+  const user = req.session.user;
+  if (!user) return res.redirect("/login");
+
+  try {
+    const history = await QuizService.getUserHistory(user.id);
+    res.render("history", { user, history });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading history");
+  }
+};

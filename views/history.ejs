@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz History</title>
+  <link rel="stylesheet" href="/css/history.css">
+  <style>
+  </style>
+</head>
+<body>
+  <div class="history-container">
+    <div class="history-header">
+      <h1 class="history-title">Your Quiz History</h1>
+      <a href="/home" class="home-link">Home</a>
+    </div>
+
+    <% if (history.length === 0) { %>
+      <p>No quiz attempts yet.</p>
+    <% } else { %>
+        
+        <div class="pagination">
+            <button id="prev-btn">Previous</button>
+            <span id="page-indicator"></span>
+            <button id="next-btn">Next</button>
+        </div>
+        <% history.forEach((attempt, i) => { %>
+            <div class="attempt" data-index="<%= i %>">
+                <div class="attempt-header">
+                <h2>Attempt <%= i + 1 %></h2>
+                <p><strong>Category:</strong> <%= attempt.category %></p>
+                <p><strong>Score:</strong> <%= attempt.score %></p>
+                </div>
+            
+                <h3>Detailed Report:</h3>
+                <% attempt.responses.forEach(r => { %>
+                <div class="question-report <%= r.status %>">
+                    <p><strong>Question:</strong> <%= r.question %></p>
+                    <p><strong>Your answer:</strong> <%= r.chosen.join(", ") %></p>
+                    <p><strong>Correct answer(s):</strong> <%= r.correct.join(", ") %></p>
+                </div>
+                <% }) %>
+            </div>
+        <% }) %>
+    <% } %>
+  </div>
+
+  <script>
+    //  PAGINATION
+    const attempts = Array.from(document.querySelectorAll(".attempt"));
+    const perPage = 1;
+    let currentPage = 0;
+    const totalPages = Math.ceil(attempts.length / perPage);
+
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const pageIndicator = document.getElementById("page-indicator");
+
+    function showPage(page) {
+      attempts.forEach((attempt, i) => {
+        attempt.style.display = (i >= page * perPage && i < (page + 1) * perPage) ? "block" : "none";
+      });
+      pageIndicator.textContent = `${page + 1} / ${totalPages}`;
+      prevBtn.disabled = page === 0;
+      nextBtn.disabled = page >= totalPages - 1;
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 0) {
+        currentPage--;
+        showPage(currentPage);
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentPage < totalPages - 1) {
+        currentPage++;
+        showPage(currentPage);
+      }
+    });
+
+    attempts.reverse();
+    const container = document.querySelector(".history-container");
+    const firstAttempt = document.getElementById("attempt-container");
+    attempts.forEach(a => container.insertBefore(a, container.children[2]));
+    showPage(0);
+  </script>
+</body>
+</html>

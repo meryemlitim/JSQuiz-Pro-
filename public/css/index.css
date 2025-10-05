@@ -16,6 +16,7 @@ body {
 }
 
 .quiz-container {
+  margin: auto;
   background: #fff;
   width: 600px;
   max-width: 95%;
@@ -178,9 +179,10 @@ body.dashboard .quiz-header {
   border-radius: 12px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   padding: 1.5rem;
+  margin: auto;
   margin-top: 2rem;
   width: 600px;
-  max-width: 95%;
+  max-width: 90%;
   text-align: center;
 }
 
@@ -292,7 +294,8 @@ body.dashboard .quiz-header {
 
 .stat-value {
   font-weight: 700;
-  color: #007bff;
+  color: #007bff !important;
+  font-size: 1.1rem;
 }
 
 #stat-avg-category {
@@ -360,4 +363,24 @@ body.dashboard .quiz-header {
 #discard-btn {
   background: #e74c3c;
   color: #fff;
+}
+
+.user-badge {
+  text-align: center;
+  margin: 2rem 0;
+}
+.badge-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.badge-icon {
+  font-size: 2rem;
+  color: gold;
+}
+.badge-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
 }
