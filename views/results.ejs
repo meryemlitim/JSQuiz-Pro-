@@ -10,7 +10,7 @@
   <div class="results-container" style="min-width: 900px;">
     <div style="display: flex; justify-content: space-between;">
       <h1 style="text-align: center;">Quiz Results</h1>
-      <a style="float: right;" href="/" class="home-link">Home</a>
+      <a style="float: right;" href="/home" class="home-link">Home</a>
     </div>
 
     <p><strong>Name:</strong> <%= report.name %></p>
@@ -27,7 +27,7 @@
         const isUnanswered = chosenAnswers.length === 1 && chosenAnswers[0] === "none";
     %>
       <div class="question-report 
-                  <%= isUnanswered ? 'wrong' : (isCorrect ? 'correct' : 'wrong') %>">
+        <%= isUnanswered ? 'wrong' : (isCorrect ? 'correct' : 'wrong') %>">
         <h3>Q<%= i + 1 %>: <%= r.question %></h3>
         <p><strong>Your answer:</strong> <%= isUnanswered ? "No answer" : chosenAnswers.join(", ") %></p>
         <p><strong>Correct answer:</strong> <%= correctAnswers.length ? correctAnswers.join(", ") : "N/A" %></p>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/admin_dashboard.css" />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- <h1>Welcome Admin</h1> -->
+      <nav>
+        <a
+          href="#dashboard"
+          class="nav-link active"
+          onclick="showSection('dashboard')"
+          >📊 Dashboard</a
+        >
+        <a href="#questions" class="nav-link" onclick="showSection('questions')"
+          >❓ Questions</a
+        >
+        <a href="#users" class="nav-link" onclick="showSection('users')"
+          >👥 Users</a
+        >
+      </nav>
+      <button  class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <h2 id="page-title">Dashboard</h2>
+        <div class="user-info">
+          <span>Admin</span>
+          <div class="user-avatar">A</div>
+        </div>
+      </div>
+
+      <!-- Dashboard Section -->
+      <div id="dashboard" class="content-section active">
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <h3>Total Questions</h3>
+            <div class="stat-value"><%= totalQuestions %></div>
+          </div>
+          <div class="stat-card green">
+            <h3>Total Users</h3>
+            <div class="stat-value"><%= totalUsers %></div>
+          </div>
+          <div class="stat-card orange">
+            <h3>Quiz Played</h3>
+            <div class="stat-value"><%= totalQuiz %></div>
+          </div>
+          <div class="stat-card purple">
+            <h3>Avg Score</h3>
+            <div class="stat-value"><%= averageScore %></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions Section -->
+      <div id="questions" class="content-section">
+        <div class="section-header">
+          <h3>Manage Questions</h3>
+          <div class="add-btn">
+            <button class="btn btn-success" onclick="openModal(this,'add')">
+              + Add Question
+            </button>
+            <button
+              class="btn btn-success"
+              onclick="openModal(this,'addCategory')"
+            >
+              + Add category
+            </button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Theme</th>
+              <th>Question</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="questions-table">
+            <% questions.forEach(q => {%>
+            <tr>
+              <td><%= q.question_id %></td>
+              <td><%= q.category %></td>
+              <td><%= q.text %></td>
+              <td class="action-btns">
+                <button
+                  class="btn btn-sm"
+                  data-id="<%= q.question_id %>"
+                  data-question="<%= q.text %>"
+                  data-category="<%= q.category %>"
+                  data-answers="<%= q.answers || '' %>"
+                  onclick="openModal(this, 'edit')"
+                >
+                  Edit
+                </button>
+
+                <!-- <form action="/admin-dashboard/delete/<%= q.id %>" method="POST">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form> -->
+                <button
+                  class="btn btn-danger btn-sm"
+                  type="submit"
+                  onclick="confirmDelete(<%= q.id %>)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <%}) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Users Section -->
+      <div id="users" class="content-section">
+        <div class="section-header">
+          <h3>Manage Users</h3>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>total Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(user => {%>
+            <tr>
+              <td><%= user.id %></td>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td><%= user.role %></td>
+              <td><%= user.totalScore %></td>
+            </tr>
+
+            <%}) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal add question -->
+    <div id="modal-question" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">Add Question</h3>
+          <button class="close-btn" onclick="closeModal('modal-question')">
+            ×
+          </button>
+        </div>
+        <form id="question-form" action="/addQuiz" method="POST">
+          <div class="form-group">
+            <label>Theme</label>
+            <select id="theme" name="quizId" required>
+              <option value="">Select theme</option>
+              <% categories.forEach(cat => { %>
+              <option value="<%= cat.id %>"><%= cat.category %></option>
+
+              <% })%>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Question</label>
+            <textarea id="question" name="questionText" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Options (check correct answers)</label>
+            <div class="options-container">
+              <% for (let i = 0; i < 3; i++) { %>
+              <div class="option-item">
+                <input
+                  type="text"
+                  name="answerText[]"
+                  placeholder="Option <%= i+1 %>"
+                  required
+                />
+                <input
+                  type="checkbox"
+                  name="status[]"
+                  value="<%= i %>"
+                  title="Correct answer"
+                />
+              </div>
+              <% } %>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success">Save Question</button>
+        </form>
+      </div>
+    </div>
+    <!-- Modal edit question -->
+    <div id="modal-edit-question" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">Edit Question</h3>
+          <button class="close-btn" onclick="closeModal('modal-edit-question')">
+            ×
+          </button>
+        </div>
+        <form id="edit-question-form" action="/editQuestion" method="POST">
+          <input type="hidden" id="edit-question-id" name="id" />
+          <div class="form-group">
+            <label>Theme</label>
+            <select name="quizId" required>
+              <option id="edit-question-category" value="">Select theme</option>
+              <% categories.forEach(cat => { %>
+              <option value="<%= cat.id %>"><%= cat.category %></option>
+
+              <% })%>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Question</label>
+            <textarea
+              id="edit-question-text"
+              name="questionText"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Options (check correct answers)</label>
+            <div class="options-container">
+              <div class="edit-option-item"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success">Save Question</button>
+        </form>
+      </div>
+    </div>
+    <!-- Modal add category -->
+    <div id="modal-category" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">Add Category</h3>
+          <button class="close-btn" onclick="closeModal('modal-category')">
+            ×
+          </button>
+        </div>
+        <form id="category-form" action="/addCategory" method="POST">
+          <div class="form-group">
+            <label>Enter category name</label>
+            <input type="text" id="categoryName" name="categoryName" required />
+          </div>
+
+          <button type="submit" class="btn btn-success">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/admin_dashboard.js"></script>
+  </body>
+</html>

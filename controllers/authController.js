@@ -1,26 +1,26 @@
-const { createUser, getUserByUsername, checkPassword } = require("../services/userService");
+const { createUser, getUserByEmail, checkPassword, index } = require("../services/userService");
 
-// Afficher le formulaire register
+// Display the registration form :
 function showRegister(req, res) {
   res.render("register");
 }
 
-// Traiter l'inscription
+// Handle register :
 async function register(req, res) {
   const { name, password, email } = req.body;
   await createUser(name, password, email);
   res.redirect("/login");
 }
 
-// Afficher le formulaire login
+// Display the connexion  form :
 function showLogin(req, res) {
   res.render("login");
 }
 
-// Traiter la connexion
+// Handle connexion. :
 async function login(req, res) {
-  const { name, password } = req.body;
-  const user = await getUserByUsername(name);
+  const { email, password } = req.body;
+  const user = await getUserByEmail(email);
 
   if (!user) {
     return res.send("❌ Utilisateur non trouvé");
@@ -31,12 +31,18 @@ async function login(req, res) {
     return res.send("❌ Mot de passe incorrect");
   }
 
-  // sauvegarder en session
-  req.session.user = { id: user.id, username: user.name, role: user.role };
-  res.send(`✅ Bienvenue ${user.username}`);
+  // Save to session :
+  req.session.user = { id: user.id, username: user.name, role: user.role , email: user.email , totalScore: user.totalScore};
+  
+  // check the user's role :
+  if (user.role === "admin") {
+    res.redirect("/admin-dashboard");
+  } else {
+    res.redirect("/home");
+  }
 }
 
-// Déconnexion
+// logout :
 function logout(req, res) {
   req.session.destroy(() => {
     res.redirect("/login");

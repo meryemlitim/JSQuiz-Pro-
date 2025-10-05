@@ -12,7 +12,7 @@ CREATE TABLE User (
 
 CREATE TABLE Quiz (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    category ENUM("general", "history", "science", "sports", "technology") NOT NULL,
+    category VARCHAR(100) NOT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
